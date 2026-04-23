@@ -24,8 +24,8 @@ from timetable_generator.controllers.course_controller import CourseController
 from timetable_generator.controllers.export_controller import ExportController
 from timetable_generator.controllers.faculty_controller import FacultyController
 from timetable_generator.controllers.room_controller import RoomController
-from timetable_generator.models.timetable_entry import TimetableEntry
-from timetable_generator.utils import mock_data
+from timetable_generator.controllers.timeslot_controller import TimeSlotController
+from timetable_generator.controllers.timetable_controller import TimetableController
 
 TITLE_TEXT = "Timetable"
 DAYS = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"]
@@ -40,6 +40,8 @@ class TimetableView(QWidget):
         faculty_controller: FacultyController,
         room_controller: RoomController,
         course_controller: CourseController,
+        timeslot_controller: TimeSlotController,
+        timetable_controller: TimetableController,
         export_controller: ExportController,
     ) -> None:
         """Initialize timetable view dependencies.
@@ -57,9 +59,11 @@ class TimetableView(QWidget):
         self._faculty_controller = faculty_controller
         self._room_controller = room_controller
         self._course_controller = course_controller
+        self._timeslot_controller = timeslot_controller
+        self._timetable_controller = timetable_controller
         self._export_controller = export_controller
 
-        self._entries: list[TimetableEntry] = mock_data.get_timetable_entries()
+        self._entries: list[dict] = []
         self._batch_grid = QTableWidget()
         self._faculty_grid = QTableWidget()
         self._room_grid = QTableWidget()
@@ -195,7 +199,10 @@ class TimetableView(QWidget):
         faculty = {item.id: item.name for item in self._faculty_controller.get_all()}
         batch = {item.id: item.name for item in self._batch_controller.get_all()}
         room = {item.id: item.room_number for item in self._room_controller.get_all()}
-        slots = {item.id: (item.day, item.start_time, item.end_time) for item in mock_data.get_timeslot_list()}
+        slots = {
+            item.id: (item.day, item.start_time, item.end_time)
+            for item in self._timeslot_controller.get_all()
+        }
         return course, faculty, batch, room, slots
 
     def _render_all(self) -> None:
@@ -265,15 +272,15 @@ class TimetableView(QWidget):
                 return
             course_map, faculty_map, _, room_map, slots = self._maps()
             query = self._search.text().strip().lower()
+            self._entries = self._timetable_controller.get_by_batch(batch_id)
             for entry in self._entries:
-                if entry.batch_id != batch_id:
-                    continue
-                day, start, _ = slots.get(entry.time_slot_id, ("", "", ""))
+                day = entry.get("day", "")
+                start = entry.get("start_time", "")
                 row = self._row_for_start(start)
                 col = self._col_for_day(day)
                 if row < 0 or col < 0:
                     continue
-                text = f"{course_map.get(entry.course_id, 'N/A')}\n{faculty_map.get(entry.faculty_id, 'N/A')}\n{room_map.get(entry.room_id, 'N/A')}"
+                text = f"{entry.get('course_name', 'N/A')}\n{entry.get('faculty_name', 'N/A')}\n{entry.get('room_name', 'N/A')}"
                 if query and query not in text.lower():
                     continue
                 item = QTableWidgetItem(text)
@@ -296,15 +303,15 @@ class TimetableView(QWidget):
                 return
             course_map, _, batch_map, room_map, slots = self._maps()
             query = self._search.text().strip().lower()
+            self._entries = self._timetable_controller.get_by_faculty(faculty_id)
             for entry in self._entries:
-                if entry.faculty_id != faculty_id:
-                    continue
-                day, start, _ = slots.get(entry.time_slot_id, ("", "", ""))
+                day = entry.get("day", "")
+                start = entry.get("start_time", "")
                 row = self._row_for_start(start)
                 col = self._col_for_day(day)
                 if row < 0 or col < 0:
                     continue
-                text = f"{course_map.get(entry.course_id, 'N/A')}\n{batch_map.get(entry.batch_id, 'N/A')}\n{room_map.get(entry.room_id, 'N/A')}"
+                text = f"{entry.get('course_name', 'N/A')}\n{entry.get('batch_name', 'N/A')}\n{entry.get('room_name', 'N/A')}"
                 if query and query not in text.lower():
                     continue
                 item = QTableWidgetItem(text)
@@ -327,15 +334,15 @@ class TimetableView(QWidget):
                 return
             course_map, faculty_map, batch_map, _, slots = self._maps()
             query = self._search.text().strip().lower()
+            self._entries = self._timetable_controller.get_by_room(room_id)
             for entry in self._entries:
-                if entry.room_id != room_id:
-                    continue
-                day, start, _ = slots.get(entry.time_slot_id, ("", "", ""))
+                day = entry.get("day", "")
+                start = entry.get("start_time", "")
                 row = self._row_for_start(start)
                 col = self._col_for_day(day)
                 if row < 0 or col < 0:
                     continue
-                text = f"{course_map.get(entry.course_id, 'N/A')}\n{faculty_map.get(entry.faculty_id, 'N/A')}\n{batch_map.get(entry.batch_id, 'N/A')}"
+                text = f"{entry.get('course_name', 'N/A')}\n{entry.get('faculty_name', 'N/A')}\n{entry.get('batch_name', 'N/A')}"
                 if query and query not in text.lower():
                     continue
                 item = QTableWidgetItem(text)
@@ -358,13 +365,15 @@ class TimetableView(QWidget):
             course_map, faculty_map, batch_map, room_map, slots = self._maps()
             rows: list[dict] = []
             for entry in self._entries:
-                day, start, end = slots.get(entry.time_slot_id, ("", "", ""))
+                day = entry.get("day", "")
+                start = entry.get("start_time", "")
+                end = entry.get("end_time", "")
                 rows.append(
                     {
-                        "course": course_map.get(entry.course_id, "N/A"),
-                        "faculty": faculty_map.get(entry.faculty_id, "N/A"),
-                        "batch": batch_map.get(entry.batch_id, "N/A"),
-                        "room": room_map.get(entry.room_id, "N/A"),
+                        "course": entry.get("course_name", "N/A"),
+                        "faculty": entry.get("faculty_name", "N/A"),
+                        "batch": entry.get("batch_name", "N/A"),
+                        "room": entry.get("room_name", "N/A"),
                         "day": day,
                         "start": start,
                         "end": end,

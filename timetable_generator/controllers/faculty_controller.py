@@ -5,8 +5,8 @@ from __future__ import annotations
 import csv
 from typing import List, Tuple
 
+from timetable_generator.controllers.api_client import ApiClient
 from timetable_generator.models.faculty import Faculty
-from timetable_generator.utils import mock_data
 
 
 class FacultyController:
@@ -15,7 +15,7 @@ class FacultyController:
     def __init__(self) -> None:
         """Initialize controller and load mock faculty data."""
 
-        self.data: List[Faculty] = mock_data.get_faculty_list()
+        self._api = ApiClient()
 
     def get_all(self) -> List[Faculty]:
         """Fetch all faculty records.
@@ -24,7 +24,19 @@ class FacultyController:
             List of Faculty objects.
         """
 
-        return list(self.data)
+        payload = self._api.get("/faculty")
+        items = payload.get("items", [])
+        return [
+            Faculty(
+                id=item["id"],
+                name=item["name"],
+                department=item.get("department", ""),
+                email=item.get("email", ""),
+                available_slots=item.get("available_slots", []),
+                assigned_courses=item.get("assigned_courses", []),
+            )
+            for item in items
+        ]
 
     def get_by_id(self, item_id: int) -> Faculty | None:
         """Find a faculty record by identifier.
@@ -36,7 +48,7 @@ class FacultyController:
             Matching Faculty object or None.
         """
 
-        return next((item for item in self.data if item.id == item_id), None)
+        return next((item for item in self.get_all() if item.id == item_id), None)
 
     def add(self, faculty: Faculty) -> bool:
         """Add a faculty record.
@@ -48,9 +60,13 @@ class FacultyController:
             True if added; False when duplicate id exists.
         """
 
-        if self.get_by_id(faculty.id) is not None:
-            return False
-        self.data.append(faculty)
+        payload = {
+            "name": faculty.name,
+            "department": faculty.department,
+            "email": faculty.email,
+            "assigned_courses": faculty.assigned_courses,
+        }
+        self._api.post("/faculty", json_body=payload)
         return True
 
     def update(self, item_id: int, faculty: Faculty) -> bool:
@@ -64,11 +80,14 @@ class FacultyController:
             True on success, False if item not found.
         """
 
-        for idx, item in enumerate(self.data):
-            if item.id == item_id:
-                self.data[idx] = faculty
-                return True
-        return False
+        payload = {
+            "name": faculty.name,
+            "department": faculty.department,
+            "email": faculty.email,
+            "assigned_courses": faculty.assigned_courses,
+        }
+        self._api.put(f"/faculty/{item_id}", json_body=payload)
+        return True
 
     def delete(self, item_id: int) -> bool:
         """Delete a faculty record by id.
@@ -80,9 +99,8 @@ class FacultyController:
             True if removed, False otherwise.
         """
 
-        before = len(self.data)
-        self.data = [item for item in self.data if item.id != item_id]
-        return len(self.data) < before
+        self._api.delete(f"/faculty/{item_id}")
+        return True
 
     def import_csv(self, filepath: str) -> Tuple[int, List[str]]:
         """Import faculty records from CSV file.
@@ -98,24 +116,11 @@ class FacultyController:
         errors: List[str] = []
         try:
             with open(filepath, newline="", encoding="utf-8") as handle:
-                reader = csv.DictReader(handle)
-                for row_no, row in enumerate(reader, start=2):
-                    try:
-                        new_id = max((item.id for item in self.data), default=0) + 1
-                        record = Faculty(
-                            id=new_id,
-                            name=row.get("name", "").strip(),
-                            department=row.get("department", "").strip(),
-                            email=row.get("email", "").strip(),
-                            available_slots=[],
-                            assigned_courses=[],
-                        )
-                        if not record.name or not record.department or not record.email:
-                            raise ValueError("Missing required columns: name/department/email")
-                        self.data.append(record)
-                        success_count += 1
-                    except Exception as exc:
-                        errors.append(f"Row {row_no}: {exc}")
+                files = {"file": (filepath, handle, "text/csv")}
+                data = {"entity": "faculty"}
+                result = self._api.post("/import-csv", files=files, data=data)
+                success_count = result.get("inserted", 0)
+                errors = result.get("errors", [])
         except Exception as exc:
             errors.append(str(exc))
         return success_count, errors

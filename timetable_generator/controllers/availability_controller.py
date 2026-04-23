@@ -4,8 +4,8 @@ from __future__ import annotations
 
 from typing import Dict, List, Tuple
 
+from timetable_generator.controllers.api_client import ApiClient
 from timetable_generator.models.faculty import Faculty
-from timetable_generator.utils import mock_data
 
 
 class AvailabilityController:
@@ -14,7 +14,7 @@ class AvailabilityController:
     def __init__(self) -> None:
         """Initialize controller and load mock faculty data."""
 
-        self.data: List[Faculty] = mock_data.get_faculty_list()
+        self._api = ApiClient()
 
     def get_all(self) -> List[Faculty]:
         """Return all faculty with availability values.
@@ -23,7 +23,19 @@ class AvailabilityController:
             List of Faculty models.
         """
 
-        return list(self.data)
+        payload = self._api.get("/faculty")
+        items = payload.get("items", [])
+        return [
+            Faculty(
+                id=item["id"],
+                name=item["name"],
+                department=item.get("department", ""),
+                email=item.get("email", ""),
+                available_slots=item.get("available_slots", []),
+                assigned_courses=item.get("assigned_courses", []),
+            )
+            for item in items
+        ]
 
     def get_by_id(self, item_id: int) -> Faculty | None:
         """Get one faculty by identifier.
@@ -35,7 +47,7 @@ class AvailabilityController:
             Matching Faculty or None.
         """
 
-        return next((item for item in self.data if item.id == item_id), None)
+        return next((item for item in self.get_all() if item.id == item_id), None)
 
     def add(self, faculty: Faculty) -> bool:
         """Add a faculty availability profile.
@@ -47,10 +59,7 @@ class AvailabilityController:
             True if added, otherwise False.
         """
 
-        if self.get_by_id(faculty.id) is not None:
-            return False
-        self.data.append(faculty)
-        return True
+        return False
 
     def update(self, item_id: int, faculty: Faculty) -> bool:
         """Update an existing faculty profile.
@@ -63,10 +72,6 @@ class AvailabilityController:
             True on success, otherwise False.
         """
 
-        for idx, item in enumerate(self.data):
-            if item.id == item_id:
-                self.data[idx] = faculty
-                return True
         return False
 
     def delete(self, item_id: int) -> bool:
@@ -79,9 +84,7 @@ class AvailabilityController:
             True on success, otherwise False.
         """
 
-        before = len(self.data)
-        self.data = [item for item in self.data if item.id != item_id]
-        return len(self.data) < before
+        return False
 
     def import_csv(self, filepath: str) -> Tuple[int, List[str]]:
         """Placeholder CSV import for availability.
@@ -106,10 +109,7 @@ class AvailabilityController:
             True if faculty exists and was updated.
         """
 
-        faculty = self.get_by_id(faculty_id)
-        if faculty is None:
-            return False
-        faculty.available_slots = sorted(set(slot_ids))
+        self._api.put(f"/availability/{faculty_id}", json_body=slot_ids)
         return True
 
     def as_mapping(self) -> Dict[int, List[int]]:
@@ -119,4 +119,4 @@ class AvailabilityController:
             Mapping of faculty id to available slot IDs.
         """
 
-        return {faculty.id: list(faculty.available_slots) for faculty in self.data}
+        return {faculty.id: list(faculty.available_slots) for faculty in self.get_all()}

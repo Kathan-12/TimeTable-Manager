@@ -5,8 +5,8 @@ from __future__ import annotations
 import csv
 from typing import List, Tuple
 
+from timetable_generator.controllers.api_client import ApiClient
 from timetable_generator.models.room import Room
-from timetable_generator.utils import mock_data
 
 
 class RoomController:
@@ -15,7 +15,7 @@ class RoomController:
     def __init__(self) -> None:
         """Initialize controller and load mock room data."""
 
-        self.data: List[Room] = mock_data.get_room_list()
+        self._api = ApiClient()
 
     def get_all(self) -> List[Room]:
         """Fetch all room records.
@@ -24,7 +24,18 @@ class RoomController:
             List of Room objects.
         """
 
-        return list(self.data)
+        payload = self._api.get("/room")
+        items = payload.get("items", [])
+        return [
+            Room(
+                id=item["id"],
+                room_number=item.get("room_number", item.get("name", "")),
+                building=item.get("building", ""),
+                capacity=item.get("capacity", 0),
+                is_lab=item.get("is_lab", False),
+            )
+            for item in items
+        ]
 
     def get_by_id(self, item_id: int) -> Room | None:
         """Find a room by identifier.
@@ -36,7 +47,7 @@ class RoomController:
             Matching Room model or None.
         """
 
-        return next((item for item in self.data if item.id == item_id), None)
+        return next((item for item in self.get_all() if item.id == item_id), None)
 
     def add(self, room: Room) -> bool:
         """Add a room record.
@@ -48,9 +59,14 @@ class RoomController:
             True if inserted; False on duplicate id.
         """
 
-        if self.get_by_id(room.id) is not None:
-            return False
-        self.data.append(room)
+        payload = {
+            "name": room.room_number,
+            "room_number": room.room_number,
+            "building": room.building,
+            "capacity": room.capacity,
+            "is_lab": room.is_lab,
+        }
+        self._api.post("/room", json_body=payload)
         return True
 
     def update(self, item_id: int, room: Room) -> bool:
@@ -64,11 +80,15 @@ class RoomController:
             True on success else False.
         """
 
-        for idx, item in enumerate(self.data):
-            if item.id == item_id:
-                self.data[idx] = room
-                return True
-        return False
+        payload = {
+            "name": room.room_number,
+            "room_number": room.room_number,
+            "building": room.building,
+            "capacity": room.capacity,
+            "is_lab": room.is_lab,
+        }
+        self._api.put(f"/room/{item_id}", json_body=payload)
+        return True
 
     def delete(self, item_id: int) -> bool:
         """Delete a room record.
@@ -80,9 +100,8 @@ class RoomController:
             True if deleted else False.
         """
 
-        before = len(self.data)
-        self.data = [item for item in self.data if item.id != item_id]
-        return len(self.data) < before
+        self._api.delete(f"/room/{item_id}")
+        return True
 
     def import_csv(self, filepath: str) -> Tuple[int, List[str]]:
         """Import room records from CSV.
@@ -98,23 +117,11 @@ class RoomController:
         errors: List[str] = []
         try:
             with open(filepath, newline="", encoding="utf-8") as handle:
-                reader = csv.DictReader(handle)
-                for row_no, row in enumerate(reader, start=2):
-                    try:
-                        new_id = max((item.id for item in self.data), default=0) + 1
-                        model = Room(
-                            id=new_id,
-                            room_number=row.get("room_number", "").strip(),
-                            building=row.get("building", "").strip(),
-                            capacity=int(row.get("capacity", 1)),
-                            is_lab=row.get("is_lab", "false").lower() == "true",
-                        )
-                        if not model.room_number:
-                            raise ValueError("Missing required column: room_number")
-                        self.data.append(model)
-                        success_count += 1
-                    except Exception as exc:
-                        errors.append(f"Row {row_no}: {exc}")
+                files = {"file": (filepath, handle, "text/csv")}
+                data = {"entity": "room"}
+                result = self._api.post("/import-csv", files=files, data=data)
+                success_count = result.get("inserted", 0)
+                errors = result.get("errors", [])
         except Exception as exc:
             errors.append(str(exc))
         return success_count, errors

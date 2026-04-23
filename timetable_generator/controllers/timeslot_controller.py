@@ -5,8 +5,8 @@ from __future__ import annotations
 import csv
 from typing import List, Tuple
 
+from timetable_generator.controllers.api_client import ApiClient
 from timetable_generator.models.timeslot import TimeSlot
-from timetable_generator.utils import mock_data
 
 
 class TimeSlotController:
@@ -15,7 +15,7 @@ class TimeSlotController:
     def __init__(self) -> None:
         """Initialize controller and load mock timeslot data."""
 
-        self.data: List[TimeSlot] = mock_data.get_timeslot_list()
+        self._api = ApiClient()
 
     def get_all(self) -> List[TimeSlot]:
         """Fetch all timeslot records.
@@ -24,7 +24,17 @@ class TimeSlotController:
             List of TimeSlot objects.
         """
 
-        return list(self.data)
+        payload = self._api.get("/timeslot")
+        items = payload.get("items", [])
+        return [
+            TimeSlot(
+                id=item["id"],
+                day=item.get("day", ""),
+                start_time=item.get("start_time", ""),
+                end_time=item.get("end_time", ""),
+            )
+            for item in items
+        ]
 
     def get_by_id(self, item_id: int) -> TimeSlot | None:
         """Find a timeslot by id.
@@ -36,7 +46,7 @@ class TimeSlotController:
             Matching TimeSlot or None.
         """
 
-        return next((item for item in self.data if item.id == item_id), None)
+        return next((item for item in self.get_all() if item.id == item_id), None)
 
     def add(self, slot: TimeSlot) -> bool:
         """Add a timeslot record.
@@ -48,9 +58,12 @@ class TimeSlotController:
             True on insert; False on duplicate id.
         """
 
-        if self.get_by_id(slot.id) is not None:
-            return False
-        self.data.append(slot)
+        payload = {
+            "day": slot.day,
+            "start_time": slot.start_time,
+            "end_time": slot.end_time,
+        }
+        self._api.post("/timeslot", json_body=payload)
         return True
 
     def update(self, item_id: int, slot: TimeSlot) -> bool:
@@ -64,11 +77,13 @@ class TimeSlotController:
             True on success else False.
         """
 
-        for idx, item in enumerate(self.data):
-            if item.id == item_id:
-                self.data[idx] = slot
-                return True
-        return False
+        payload = {
+            "day": slot.day,
+            "start_time": slot.start_time,
+            "end_time": slot.end_time,
+        }
+        self._api.put(f"/timeslot/{item_id}", json_body=payload)
+        return True
 
     def delete(self, item_id: int) -> bool:
         """Delete a timeslot record.
@@ -80,9 +95,8 @@ class TimeSlotController:
             True if removed else False.
         """
 
-        before = len(self.data)
-        self.data = [item for item in self.data if item.id != item_id]
-        return len(self.data) < before
+        self._api.delete(f"/timeslot/{item_id}")
+        return True
 
     def import_csv(self, filepath: str) -> Tuple[int, List[str]]:
         """Import timeslot records from CSV.
@@ -98,20 +112,11 @@ class TimeSlotController:
         errors: List[str] = []
         try:
             with open(filepath, newline="", encoding="utf-8") as handle:
-                reader = csv.DictReader(handle)
-                for row_no, row in enumerate(reader, start=2):
-                    try:
-                        new_id = max((item.id for item in self.data), default=0) + 1
-                        model = TimeSlot(
-                            id=new_id,
-                            day=row.get("day", "Monday").strip(),
-                            start_time=row.get("start_time", "09:00").strip(),
-                            end_time=row.get("end_time", "10:00").strip(),
-                        )
-                        self.data.append(model)
-                        success_count += 1
-                    except Exception as exc:
-                        errors.append(f"Row {row_no}: {exc}")
+                files = {"file": (filepath, handle, "text/csv")}
+                data = {"entity": "timeslot"}
+                result = self._api.post("/import-csv", files=files, data=data)
+                success_count = result.get("inserted", 0)
+                errors = result.get("errors", [])
         except Exception as exc:
             errors.append(str(exc))
         return success_count, errors

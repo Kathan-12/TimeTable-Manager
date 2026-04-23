@@ -1,0 +1,1781 @@
+      Project Title: Time Table Generator                  Group Id: C
+      Student ID:                                          Student Names:
+         1. 202301165                                         1. Shrey Shah
+         2. 202301145                                         2. Ayush Mittal
+         3. 202301067                                         3. Prince Chovatiya
+         4. 202301043                                         4. Nisarg Divecha
+         5. 202301412                                         5. Jeet Modi
+         6. 202301279                                         6. Kathan Balar
+
+
+     Project:
+I.      Brief Description of the Project
+     The Time Table Generator System automatically generates a valid and conflict-free university
+     timetable. It assigns courses to available time slots and classrooms while satisfying all hard
+     constraints such as faculty availability, room capacity, batch scheduling conflicts, and course
+     duration requirements.
+     The final output includes:
+           Batch-wise timetable
+           Faculty-wise timetable
+           Room allocation schedule
+           List of unresolved conflicts (if any)
+
+
+II.     Process Model Chosen and Justification
+
+            Process Model: Agile (Scrum)
+
+            Justification:
+            The Agile model is selected for the Time Table Generator project due to its iterative and
+            flexible approach. Since timetable scheduling involves multiple constraints and possible
+            refinements, Agile allows requirements and logic to evolve during development.
+                 Supports changing requirements during constraint implementation.
+                 Enables incremental development through sprints (input module, scheduling
+                     logic, reports).
+                 Allows continuous feedback and improvement after each iteration.
+                 Helps in early risk detection and systematic issue resolution.
+                 Encourages team collaboration and transparency.
+                 Ensures better quality output through continuous testing.
+            Thus, Agile is suitable for developing a constraint-based system like the Time Table
+            Generator.
+
+
+
+                                                    Page 1 of 38
+III.   Function Point Analysis
+
+           Number of External Inputs
+        Sl.No,  Details     Optimistic             Likely         Pessimistic Est.   Weight FP
+                                                                              Count         Count
+                 1 Enter                       2             4              7   4.17      4  16.68
+                   Faculty
+                   Details
+                 2 Enter                       2             4              7    4.17        4    16.68
+                   Course
+                   Details
+                 3 Enter Batch                 1             4              7       4        4      16
+                   Details
+                 4 Enter                       1             3              7    3.33        3     9.99
+                   Room
+                   Details
+                 5 Enter Time                  2             4              7    4.17        4    16.68
+                   Slot Details
+                 6 Enter                       3             5              9    5.33        6    31.98
+                   Faculty
+                   Availability
+                 7 Enter                       3             6             10    6.17        6    37.02
+                   Scheduling
+                   Constraints
+                 8 Update                      2             5              8       5        4      20
+                   Data and
+                   Regenerate
+                   Timetable
+                 9 Import                      2             4              8    4.33        4    17.32
+                   Faculty /
+                   Course
+                   Data via
+                   CSV
+
+
+       Total External Inputs (EI) = 182.35
+
+
+
+
+       Number of External Outputs
+
+        Sl.No,      Details       Optimistic        Likely        Pessimistic   Est.    Weight   FP
+                                                                                Count            Count
+
+
+
+                                                   Page 2 of 38
+       1 Batch-wise               2             5              7   4.83      5   24.15
+         Timetable
+         Report
+       2 Faculty-                 2             5              7   4.83      5   24.15
+         wise
+         Timetable
+         Report
+       3 Room-wise                2             4              7   4.17      5   20.85
+         Timetable
+         Report
+       4 Conflict                 3             5              9   5.33      4   21.32
+         Report
+       5 Export                   2             4              8   4.33      5   21.65
+         Timetable
+         in Readable
+         Format
+       6 Scheduling               3             5              9   5.33      5   26.65
+         Summary /
+         Utilization
+         Report
+       7 Faculty                  2             4              8   4.33      5   21.65
+         Workload
+         Distribution
+         Report
+
+Total External Outputs (EO) = 160.42
+
+Number of External Enquires
+ Sl.No,  Details     Optimistic        Likely        Pessimistic Est.   Weight FP
+                                                                 Count         Count
+       1 View                     1             3              7   3.33      3   9.99
+         Timetable
+         by Batch
+       2 View                     1             3              7   3.33      3    9.99
+         Timetable
+         by Faculty
+       3 View                     1             3              7   3.33      3    9.99
+         Timetable
+         by Room
+       4 Check                    2             5              8     5       4     20
+         Conflict
+         Details
+       5 Check                    2             4              8   4.33      4   17.32
+         Room /
+         Slot
+         Availability
+
+
+
+                                      Page 3 of 38
+             6 Search                    1             3              7   3.33      3    9.99
+               Timetable
+               by Course
+               Name
+
+      Total External Enquiries (EQ) = 77.28
+
+      Number of Internal Logical Files
+       Sl.No,  Details     Optimistic         Likely        Pessimistic Est.   Weight FP
+                                                                        Count         Count
+             1 Faculty                   2             4              7   4.17      7  29.19
+               Master File
+             2 Course                    2             4              7   4.17      7   29.19
+               Master File
+             3 Batch                     1             3              7   3.33      7   23.31
+               Master File
+             4 Room                      1             3              7   3.33      7   23.31
+               Master File
+             5 Time Slot                 2             4              7   4.17      7   29.19
+               Master File
+             6 Timetable                 3             6              9       6    10     60
+               Records
+               File
+             7 Conflict                  2             5              9   5.17     10    51.7
+               Records
+               File
+             8 Constraint                3             6             10   6.17     10    61.7
+               Rules File
+
+      Total Internal Logic Files (ILF) = 307.59
+
+      Calculation:
+      For every row, the estimated count is derived using the PERT formula:
+      Est. Count = (O + 4L + P) / 6
+      Where: O = Optimistic | L = Likely | P = Pessimistic
+      FP Count = Est. Count x Weight
+
+      Total Unadjusted Function Points
+      UFP = EI + EO + EQ + ILF
+      UFP = 182.35 + 160.42 + 77.28 + 307.59 = 727.64
+
+
+
+IV.   Team Composition and Roles
+
+       Sl.No.          Name                          Roles & Responsibilities
+          1.     Shrey Shah           Project Manager, Sprint Planning
+
+                                             Page 4 of 38
+             2.     Ayush Mittal           Backend Developer
+             3.     Prince Chovatiya       Database Designer
+             4.     Nisarg Divecha         Frontend Developer
+             5.     Jeet Modi              System Design Lead
+             6.     Kathan Balar           Testing & Documentation Lead
+
+
+V.      System Requirements Specification
+
+     1. Introduction
+
+     1.1 Purpose
+
+     The purpose of this document is to define the requirements of the Time Table Generator
+     System. The system will automatically generate a conflict-free university timetable by assigning
+     courses to time slots and rooms while satisfying constraints.
+
+     1.2 Scope
+
+     The system automates timetable creation for a university. It reduces manual effort and avoids
+     scheduling conflicts.
+
+     The system will:
+
+        ●   Generate batch wise timetables
+        ●   Generate faculty wise timetables
+        ●   Generate room allocation schedules
+        ●   Detect unresolved conflicts
+        ●   Optimize scheduling quality by reducing idle time
+
+     1.3 Project Description
+
+     The system assigns courses to time slots and classrooms while satisfying constraints such as
+     faculty availability, room capacity, batch conflicts and course requirements.
+
+     It ensures:
+
+        ●   No faculty, batch or room conflicts
+        ●   Required lectures per week are satisfied
+        ●   Proper allocation of labs and classrooms
+        ●   Optimization of soft constraints
+
+     The output includes:
+
+        ●   Batch wise timetable
+        ●   Faculty wise timetable
+        ●   Room allocation schedule
+        ●   List of unresolved conflicts
+
+                                                Page 5 of 38
+2. Overall Description
+
+2.1 Product Perspective
+
+The system is a standalone application used for academic scheduling. It supports administrators
+in generating and managing timetables efficiently.
+
+2.2 Product Functions
+
+Main functions include:
+
+   ●   Input academic data
+   ●   Validate data
+   ●   Generate timetable
+   ●   Apply constraints
+   ●   Optimize schedule
+   ●   Display and export results
+   ●   Show conflicts
+
+2.3 User Classes
+
+   ●   Admin or coordinator enters data and generates timetable
+   ●   Faculty views their timetable
+   ●   Students or batches view their schedule
+   ●   Developers maintain the system
+
+2.4 Operating Environment
+
+   ●   Web or desktop application
+   ●   Runs on standard systems
+   ●   Backend implemented using suitable programming language
+   ●   Database for storing data
+
+2.5 Constraints
+
+   ●   No faculty overlap
+   ●   No batch overlap
+   ●   No room overlap
+   ●   Room capacity must match batch size
+   ●   Lecture count must be satisfied
+   ●   Lab sessions must follow duration rules
+   ●   No Faculty should have back to back lectures.
+   ●   Faculty availability must be respected
+
+2.6 Assumptions
+
+   ●   All data is provided correctly
+
+                                         Page 6 of 38
+   ●   All entities such as rooms and faculty are predefined
+   ●   Some constraints may make full scheduling impossible
+
+3. Functional Requirements
+
+FR1 Data Input
+
+   ●   System shall allow entry of faculty, courses, batches, rooms and time slots
+
+FR2 Data Validation
+
+   ●   System shall validate completeness and correctness of input
+
+FR3 Timetable Generation
+
+   ●   System shall generate timetable automatically using constraints
+
+FR4 Hard Constraints
+
+   ●   System shall ensure
+          ○ No conflicts
+          ○ Lecture requirements satisfied
+          ○ Proper lab/tutorial scheduling
+
+FR5 Soft Constraints
+
+   ●   System shall try to
+          ○ Reduce idle time
+          ○ Reduce gaps
+          ○ Improve compactness
+
+FR6 Conflict Detection
+
+   ●   System shall identify and display unscheduled or conflicting entries
+
+FR7 Timetable Display
+
+   ●   System shall generate
+          ○ Batch wise timetable
+          ○ Faculty wise timetable
+          ○ Room wise timetable
+
+FR8 Export
+
+   ●   System shall allow export in readable formats
+
+FR9 Regeneration
+
+
+
+                                          Page 7 of 38
+    ●   System shall allow timetable update when data changes
+
+4. Non Functional Requirements
+
+4.1 Performance
+
+    ●   Timetable generation should be efficient
+
+4.2 Reliability
+
+    ●   System must produce correct and consistent schedules
+
+4.3 Usability
+
+    ●   Interface should be simple and user friendly
+
+4.4 Maintainability
+
+    ●   System should support easy updates
+
+4.5 Scalability
+
+    ●   System should handle increasing data
+
+4.6 Portability
+
+    ●   System should work across devices.
+
+4.7 Security
+
+    ●   Only authorized users can modify data
+
+5. System Features
+
+5.1 Input Module
+
+    ●   Stores all scheduling data
+
+5.2 Scheduling Engine
+
+    ●   Core logic that generates timetable
+
+5.3 Constraint Module
+
+    ●   Handles constraint validation and optimization
+
+5.4 Output Module
+
+    ●   Displays and exports timetable
+
+
+                                              Page 8 of 38
+5.5 Conflict Module
+
+   ●   Reports unresolved issues
+
+6. External Interface Requirements
+
+6.1 User Interface
+
+   ●   Forms for input
+   ●   Generate button
+   ●   Display screens
+   ●   Conflict reports
+   ●   Export option
+
+6.2 Hardware Interface
+
+   ●   Standard computer system
+
+6.3 Software Interface
+
+   ●   Database system
+   ●   Backend logic
+
+7. Data Requirements
+
+   ●   Faculty details
+   ●   Course details
+   ●   Batch details
+   ●   Room details
+   ●   Time slots
+   ●   Timetable records
+   ●   Conflict records
+
+8. Use Cases
+
+   ●   Generate timetable
+   ●   View batch timetable
+   ●   View faculty timetable
+   ●   Check conflicts
+
+9. Acceptance Criteria
+
+   ●   No conflicts in schedule
+   ●   Lecture requirements satisfied
+   ●   All outputs generated correctly
+   ●   Conflicts reported if any
+
+
+                                         Page 9 of 38
+  10. Conclusion
+
+  The system automates timetable generation using constraint based logic. It improves efficiency,
+  reduces errors and provides structured outputs for academic scheduling.
+
+VI.   System Design Document
+      1. HIGH LEVEL DESIGN (HLD)
+
+      1.1 ARCHITECTURAL STYLE
+
+        The system follows a Layered + Modular + Scalable Architecture to support a high-
+      complexity system (768.49 FP).
+
+       Presentation Layer
+          ↓
+       Application Layer
+          ↓
+       Scheduling Engine Layer
+          ↓
+       Data Access Layer
+          ↓
+       Database Layer
+
+       This architecture ensures:
+        ● Separation of concerns
+        ● Scalability for large datasets
+        ● Maintainability and extensibility
+
+
+      1.2 MAJOR COMPONENTS
+
+       1. Presentation Layer
+
+         Handles all user interactions and visualization.
+
+         Responsibilities:
+          ● Data input forms (faculty, courses, batches, rooms, slots)
+          ● Faculty availability configuration UI
+          ● Constraint configuration UI
+          ● Timetable visualization (batch/faculty/room)
+          ● Conflict visualization
+          ● Dashboard (analytics + reports)
+          ● Export interface
+
+         Users:
+          ● Admin (full control)
+          ● Faculty (view + limited interaction)
+
+                                              Page 10 of 38
+   ● Students (view only)
+
+
+2. Application Layer
+
+ Acts as the central controller between UI and backend.
+
+ Responsibilities:
+  ● Input validation
+  ● API routing
+  ● Scheduling trigger management
+  ● Regeneration control
+  ● Error handling
+
+
+3. Scheduling Engine Layer (Core)
+
+ Most critical and computation-heavy component.
+
+ Responsibilities:
+  ● Generate timetable using CSP
+  ● Handle large constraint space
+  ● Perform backtracking
+  ● Apply heuristics and pruning
+  ● Optimize timetable quality
+
+ Key Features:
+  ● Handles high EI + ILF complexity
+  ● Supports partial solutions
+  ● Supports re-generation
+
+
+4. Data Access Layer
+
+ Acts as an abstraction over database.
+
+ Responsibilities:
+  ● CRUD operations
+  ● Efficient query execution
+  ● Data caching (future enhancement)
+  ● Handling large ILF datasets
+
+
+5. Database Layer
+
+ Stores all internal logical files (ILF = 307.59 FP)
+
+
+                                     Page 11 of 38
+ 6. Input Management Module
+
+  Handles all External Inputs (EI = 182.35 FP)
+
+  Responsibilities:
+   ● Insert/update/delete operations
+   ● Faculty availability management
+   ● Constraint rule definition
+   ● Bulk data import (CSV)
+   ● Timetable regeneration trigger
+
+
+ 7. Output & Reporting Module
+
+  Handles all External Outputs (EO = 160.42 FP)
+
+  Responsibilities:
+   ● Generate multiple timetable views
+   ● Generate conflict reports
+   ● Generate utilization reports
+   ● Generate workload distribution
+   ● Export to PDF/CSV
+
+
+ 8. Query Module
+
+  Handles all External Enquiries (EQ = 77.28 FP)
+
+  Responsibilities:
+   ● Query timetable by multiple dimensions
+   ● Check conflicts
+   ● Check availability
+   ● Search functionality
+
+
+1.3 SYSTEM FLOW (HLD)
+
+ 1. Admin inputs data through UI
+ 2. Validation module verifies correctness
+ 3. Data stored in database
+ 4. Scheduling engine processes constraints
+ 5. Constraint module validates assignments
+ 6. Conflict module detects violations
+ 7. Optimized timetable generated
+ 8. Output module generates reports
+ 9. Query module handles user requests
+
+                                    Page 12 of 38
+1.4 DEPLOYMENT DESIGN
+
+ Deployment Type:
+  ● Web-based scalable system
+
+ Technology Stack:
+   ● Frontend: React
+   ● Backend: FastAPI
+   ● Scheduling Engine: Python
+   ● Database: PostgreSQL
+
+ Architecture Flow:
+   Frontend → API → Backend → Scheduling Engine → Database
+
+
+1.5 NON-FUNCTIONAL DESIGN MAPPING
+
+ Requirement   → Design Solution
+ Performance   → CSP + Heuristics + Pruning
+ Reliability → Strong constraint validation
+ Usability   → Interactive UI
+ Scalability → Modular + high-volume DB
+ Security    → Role-based access
+
+
+
+2. LOW LEVEL DESIGN (LLD)
+
+2.1 CLASS DESIGN
+
+ Faculty
+ class Faculty {
+ public:
+    int id;
+    string name;
+    vector<int> availableSlots;
+    vector<int> assignedCourses;
+ };
+
+ Course
+ class Course {
+ public:
+   int id;
+   string name;
+   int lecturesPerWeek;
+
+                                   Page 13 of 38
+      bool isLab;
+ };
+
+ Batch
+ class Batch {
+ public:
+    int id;
+    string name;
+    int size;
+    vector<int> courses;
+ };
+
+ Room
+ class Room {
+ public:
+    int id;
+    int capacity;
+    bool isLab;
+ };
+
+ TimeSlot
+ class TimeSlot {
+ public:
+    int id;
+    string day;
+    int startTime;
+    int endTime;
+ };
+
+ TimetableEntry
+ class TimetableEntry {
+ public:
+    int courseId;
+    int facultyId;
+    int batchId;
+    int roomId;
+    int timeSlotId;
+ };
+
+ Constraint
+ class Constraint {
+ public:
+    virtual bool isSatisfied(TimetableEntry entry) = 0;
+ };
+
+
+2.2 MODULE-LEVEL DESIGN
+
+                                       Page 14 of 38
+1. Input Module
+
+ Submodules:
+  ● FacultyManager
+  ● CourseManager
+  ● BatchManager
+  ● RoomManager
+  ● TimeSlotManager
+  ● FacultyAvailabilityManager
+  ● ConstraintManager
+  ● CSVImportManager
+
+ Responsibilities:
+  ● Data insertion and updates
+  ● Constraint handling
+  ● Bulk import
+  ● Regeneration
+
+
+2. Validation Module
+
+ bool validateFaculty();
+ bool validateRoomCapacity();
+ bool validateCourseRequirements();
+ bool validateAvailability();
+ bool validateConstraints();
+
+
+3. Scheduling Engine
+
+ Approach: Constraint Satisfaction Problem (CSP)
+
+ Algorithm:
+
+   1. Initialize empty timetable
+   2. Sort courses (labs first)
+   3. For each course:
+     ○ Try all combinations
+     ○ Check hard constraints
+     ○ Assign if valid
+
+   4. If assignment fails:
+     ○ Backtrack
+
+   5. Apply soft constraint optimization
+
+
+                                     Page 15 of 38
+ Data Structures:
+  ● vector<TimetableEntry>
+  ● map<TimeSlot, vector<Entry>>
+  ● set (availability tracking)
+
+ Optimization:
+  ● Most constrained first
+  ● Least available faculty
+  ● Lab priority
+  ● Early pruning
+
+
+4. Constraint Module
+
+ Hard Constraints:
+  ● No faculty overlap
+  ● No batch overlap
+  ● No room overlap
+  ● Room capacity validity
+  ● Lab duration satisfaction
+
+ Soft Constraints:
+  ● Idle time minimization
+  ● Gap reduction
+  ● Compactness
+
+ Scoring Function:
+  Score = w1*(idle time) + w2*(gaps) + w3*(compactness)
+
+
+5. Conflict Module
+
+ class Conflict {
+ public:
+    string type;
+    string description;
+ };
+
+ Responsibilities:
+  ● Detect overlaps
+  ● Detect unscheduled lectures
+  ● Detect constraint violations
+
+
+6. Output & Reporting Module
+
+
+                                   Page 16 of 38
+  Functions:
+   ● generateBatchTimetable()
+   ● generateFacultyTimetable()
+   ● generateRoomTimetable()
+   ● generateConflictReport()
+   ● generateUtilizationReport()
+   ● generateWorkloadReport()
+   ● exportPDF()
+   ● exportCSV()
+
+
+ 7. Query Module
+
+  Functions:
+   ● viewByBatch()
+   ● viewByFaculty()
+   ● viewByRoom()
+   ● checkConflicts()
+   ● checkAvailability()
+   ● searchByCourseName()
+
+
+2.3 DATABASE DESIGN
+
+ Tables:
+   ● Faculty
+   ● Course
+   ● Batch
+   ● Room
+   ● TimeSlot
+   ● Timetable
+   ● Conflict
+   ● ConstraintRules
+
+
+2.4 SEQUENCE DESIGN
+
+ User → UI → Controller → Validator
+             ↓
+         Scheduling Engine
+             ↓
+         Constraint Checker
+             ↓
+           Database
+             ↓
+        Output / Query Module
+
+
+                                      Page 17 of 38
+       2.5 ERROR HANDLING DESIGN
+
+        ● Invalid input → rejected
+        ● No feasible solution → conflict report
+        ● Partial solution → warnings
+
+
+       2.6 PERFORMANCE DESIGN
+
+        ● Time Complexity: Exponential (CSP)
+
+        Optimization:
+         ● Heuristics
+         ● Pruning
+         ● Early stopping
+         ● Efficient data structures
+
+
+       2.7 SECURITY DESIGN
+
+        ● Authentication: Admin login
+
+        Authorization:
+         ● Admin → modify
+         ● Others → view only
+
+
+       2.8 SCALABILITY DESIGN
+
+        ● Modular architecture
+        ● Database indexing
+        ● Parallel scheduling (future)
+        ● High-load support
+
+
+       2.10 FUNCTION POINT MAPPING
+
+        Component     FP Category         FP Count
+        Input Module  EI                 182.35
+        Output Module EO                 160.42
+        Query Module EQ                  77.28
+        Database      ILF                307.59
+
+        Total UFP: 727.64
+
+VII.   Sprint Documentation
+
+                                             Page 18 of 38
+1. PROJECT OVERVIEW
+
+  ● Project: Time Table Generator System
+  ● Methodology: Agile (Sprint-based execution aligned with Gantt chart)
+  ● Total Function Points: 727.64 (UFP)
+  ● System Complexity: Large-scale scheduling system with high data and constraint
+complexity
+  ● Sprint Structure: 4 Sprints + 1 Final Testing Phase
+
+
+2. SPRINT STRUCTURE
+
+ S0 – INITIATION & DOCUMENTATION
+
+  Goal:
+   Establish a complete project foundation and ensure alignment between SRS, FP
+analysis, and system design.
+
+ User Stories:
+  ● As a developer, I want a complete understanding of system requirements
+  ● As a team, we want a well-defined and scalable project plan
+  ● As a designer, I want an architecture that supports high system complexity
+
+ Tasks:
+
+   Requirement Analysis:
+    ● Study and finalize SRS
+    ● Identify functional and non-functional requirements
+    ● Define system boundaries
+
+   Function Point Analysis:
+    ● Perform FP estimation (EI, EO, EQ, ILF)
+    ● Validate complexity classification
+    ● Ensure alignment with system scope
+
+   Planning:
+     ● Create Gantt chart aligned with sprint phases
+     ● Define milestones and dependencies
+
+   Design:
+    ● Identify system modules (Input, Output, Query, Reporting)
+    ● Define architecture (HLD + LLD)
+    ● Prepare database schema
+
+ Deliverables:
+  ● SRS document
+  ● FP Analysis (727.64 UFP)
+
+                                     Page 19 of 38
+   ● Gantt chart
+   ● Complete System Design Document
+
+ Acceptance Criteria:
+  ● All documentation completed
+  ● FP analysis matches system design
+  ● Architecture supports large-scale system
+
+ Risks:
+  ● Misalignment between FP and design
+  ● Underestimation of complexity
+
+
+ SPRINT 1 – INPUT & DATA MANAGEMENT MODULE
+
+  Goal:
+   Develop a scalable input system capable of handling large data volumes and complex
+constraints.
+
+ User Stories:
+  ● As an admin, I want to input faculty, course, batch, room, and timeslot data
+  ● As an admin, I want to define faculty availability
+  ● As an admin, I want to configure scheduling constraints
+  ● As an admin, I want bulk data import via CSV
+  ● As a system, I must validate all inputs
+
+ Tasks:
+
+   Backend Development (FastAPI):
+    ● Implement APIs:
+      ○ POST /faculty
+      ○ POST /course
+      ○ POST /batch
+      ○ POST /room
+      ○ POST /timeslot
+      ○ POST /availability
+      ○ POST /constraints
+      ○ POST /import-csv
+      ○ PUT /update-data
+      ○ POST /regenerate
+
+   Database Design:
+    ● Create tables:
+      ○ Faculty
+      ○ Course
+      ○ Batch
+      ○ Room
+
+                                     Page 20 of 38
+     ○ TimeSlot
+     ○ ConstraintRules
+   ● Add indexing for performance
+
+ Validation Module:
+  ● Validate required fields
+  ● Validate room capacity
+  ● Validate faculty availability
+  ● Validate constraint consistency
+  ● Prevent duplicate/inconsistent data
+
+ CSV Import Module:
+  ● Parse CSV files
+  ● Validate imported data
+  ● Store in database
+
+Deliverables:
+ ● Fully functional Input Module
+ ● Database schema implemented
+ ● Validation system
+ ● CSV import system
+
+Acceptance Criteria:
+ ● Inputs stored correctly
+ ● Invalid data rejected
+ ● Bulk import works
+ ● Data consistency ensured
+
+Risks:
+ ● Poor validation affecting scheduling
+ ● Schema inefficiency
+
+
+SPRINT 2 – SCHEDULING ENGINE & CONSTRAINT HANDLING
+
+Goal:
+ Develop a high-performance scheduling engine for large constraint space.
+
+User Stories:
+ ● As an admin, I want automatic timetable generation
+ ● As a system, I must satisfy all constraints
+ ● As a system, I should optimize timetable quality
+
+Tasks:
+
+ Scheduling Engine:
+  ● Implement CSP algorithm
+
+                                    Page 21 of 38
+   ● Implement backtracking with pruning
+   ● Assign:
+     ○ Time slots
+     ○ Faculty
+     ○ Rooms
+
+ Constraint Module:
+
+   Hard Constraints:
+    ● No faculty overlap
+    ● No batch overlap
+    ● No room overlap
+    ● Room capacity validation
+    ● Lab scheduling rules
+
+   Soft Constraints:
+    ● Minimize idle time
+    ● Reduce gaps
+    ● Improve compactness
+
+ Optimization:
+  ● Most constrained first
+  ● Least available faculty first
+  ● Lab prioritization
+  ● Early pruning
+
+ Conflict Handling:
+  ● Detect overlaps
+  ● Detect unscheduled lectures
+  ● Generate conflict data
+
+Deliverables:
+ ● Working scheduling engine
+ ● Constraint validation
+ ● Conflict module
+
+Acceptance Criteria:
+ ● Timetable generated successfully
+ ● No hard constraint violations
+ ● Maximum feasible allocation
+
+Risks:
+ ● High computational complexity
+ ● No feasible solution
+
+
+SPRINT 3 – OUTPUT, QUERY & REPORTING MODULE
+
+                                    Page 22 of 38
+Goal:
+ Implement full output generation, analytics, and querying capabilities.
+
+User Stories:
+ ● As a student, I want to view timetable
+ ● As a faculty member, I want to view schedule
+ ● As an admin, I want reports and exports
+ ● As a user, I want efficient querying
+
+Tasks:
+
+ Output Module:
+  ● Generate:
+    ○ Batch-wise timetable
+    ○ Faculty-wise timetable
+    ○ Room-wise timetable
+    ○ Conflict reports
+
+ Reporting Module:
+  ● Generate:
+    ○ Resource utilization
+    ○ Faculty workload distribution
+    ○ Scheduling summary
+
+ Query Module:
+  ● View by batch
+  ● View by faculty
+  ● View by room
+  ● Check conflicts
+  ● Check availability
+  ● Search by course
+
+ UI Development:
+  ● Dashboard
+  ● Timetable visualization
+  ● Conflict display
+
+ Export Module:
+  ● Export:
+    ○ CSV
+    ○ PDF
+
+Deliverables:
+ ● UI system
+ ● Output + reporting modules
+ ● Query system
+
+                                      Page 23 of 38
+Acceptance Criteria:
+ ● Accurate display
+ ● Correct reports
+ ● Efficient queries
+ ● Working export
+
+Risks:
+ ● UI complexity
+ ● Incorrect reporting
+
+
+SPRINT 4 – SYSTEM OPTIMIZATION & REFINEMENT
+
+Goal:
+ Improve performance, scalability, and robustness of the system.
+
+User Stories:
+ ● As a system, I want optimized scheduling performance
+ ● As an admin, I want faster response times
+ ● As a user, I want reliable system behavior
+
+Tasks:
+
+ Performance Optimization:
+  ● Optimize scheduling algorithm
+  ● Improve query performance
+  ● Reduce execution time
+
+ Validation Enhancements:
+  ● Improve constraint handling
+  ● Handle edge cases
+
+ System Refinement:
+  ● Improve UI usability
+  ● Optimize database queries
+  ● Enhance stability
+
+Deliverables:
+ ● Optimized system
+ ● Improved performance
+ ● Stable execution
+
+Acceptance Criteria:
+ ● Faster timetable generation
+ ● Efficient query response
+ ● Stable system under load
+
+                                    Page 24 of 38
+ Risks:
+  ● Optimization complexity
+  ● Performance bottlenecks
+
+
+ FINAL PHASE – TESTING & SUBMISSION
+
+ Goal:
+  Ensure system correctness, reliability, and completeness.
+
+ User Stories:
+  ● As an admin, I want a reliable system
+  ● As a user, I want an accurate timetable
+
+ Tasks:
+
+   Testing:
+     ● Unit testing
+     ● Integration testing
+     ● Performance testing
+
+   Bug Fixing:
+    ● Fix scheduling errors
+    ● Fix UI issues
+    ● Resolve conflicts
+
+   Documentation:
+    ● Final System Design Document
+    ● Sprint documentation
+    ● User manual
+
+ Deliverables:
+  ● Fully tested system
+  ● Final submission
+
+ Acceptance Criteria:
+  ● No system crashes
+  ● Constraints satisfied
+  ● Matches SRS and FP
+
+ Risks:
+  ● Hidden bugs
+  ● Performance issues
+
+
+3. TRACEABILITY (SRS → SPRINT)
+
+                                    Page 25 of 38
+         Data Input         → Sprint 1
+         Data Validation     → Sprint 1
+         CSV Import          → Sprint 1
+         Timetable Generation → Sprint 2
+         Constraint Handling → Sprint 2
+         Conflict Detection → Sprint 2 / 3
+         Timetable Display    → Sprint 3
+         Reporting & Analytics → Sprint 3
+         Query System         → Sprint 3
+         System Optimization → Sprint 4
+         Testing           → Final Phase
+
+VIII.   Programs and the logics applied
+        The timetable generator is designed as a structured scheduling system that automatically
+        creates conflict-free class timetables for the university. The core logic of the system is built
+        around Constraint Satisfaction Problem (CSP) principles, supported by backtracking, greedy
+        initialization, validation rules, and optimization heuristics. This ensures that the timetable is
+        both feasible and efficient, while also reducing manual work in timetable preparation.
+        1. CORE PROGRAM LOGIC
+        The timetable generation process works in a step-by-step manner:
+
+
+        1. The system accepts input data such as:
+           ● faculty details
+           ● course details
+           ● batch details
+           ● room details
+           ● available time slots
+
+
+          2. The input is checked through validation modules to ensure that all required information
+        is correct and complete.
+
+
+         3. The scheduling engine attempts to assign each course to an appropriate:
+           ● faculty
+           ● room
+           ● time slot
+
+
+                                                Page 26 of 38
+ 4. During assignment, the system checks all hard constraints:
+   ● no overlapping classes
+   ● room capacity
+   ● faculty availability
+   ● lab requirements
+
+
+  5. If a valid arrangement is not found, the system backtracks and tries another
+combination.
+
+
+ 6. After generating a valid timetable, the system applies soft constraints to improve quality:
+   ● reduce idle time
+   ● minimize gaps
+   ● improve balance
+
+
+ 7. Finally, the output module displays the timetable and reports conflicts (if any).
+
+
+
+
+2. ALGORITHMS AND TECHNIQUES USED
+
+
+ a) Constraint Satisfaction Problem (CSP)
+
+
+   The timetable generation problem is treated as a CSP where:
+   ● Variables: lectures, time slots, faculty, rooms, batches
+   ● Domain: all possible valid combinations
+   ● Constraints: rules that ensure valid assignments
+
+
+   Only assignments satisfying all constraints are accepted.
+
+
+ b) Backtracking Algorithm
+
+
+                                       Page 27 of 38
+ Backtracking is used when:
+ ● a conflict occurs during assignment
+
+
+ Process:
+ ● remove the current assignment
+ ● try the next possible option
+
+
+ This continues until:
+ ● a feasible timetable is found OR
+ ● all possibilities are exhausted
+
+
+c) Greedy Allocation
+
+
+ Used for fast initial placement:
+ ● high-priority courses (e.g., labs) assigned first
+
+
+ Advantage:
+ ● reduces future conflicts
+ ● builds strong initial solution
+
+
+d) Validation Checks
+
+
+ Performed before and during scheduling:
+
+
+ ● faculty availability
+ ● room capacity
+ ● room type compatibility
+ ● batch availability (no double booking)
+
+
+
+                                      Page 28 of 38
+3. HARD CONSTRAINTS (STRICT RULES)
+
+
+ These must NEVER be violated:
+
+
+ ● A faculty member cannot teach two classes at the same time
+ ● A batch cannot attend two lectures in the same slot
+ ● A room cannot host multiple classes simultaneously
+ ● Room capacity must match batch size
+ ● Lab classes must be assigned:
+    ○ only to lab rooms
+    ○ with required duration
+
+
+
+  If any rule fails → assignment is rejected immediately
+ 
+
+
+
+
+4. SOFT CONSTRAINTS (OPTIMIZATION RULES)
+
+
+ These improve timetable quality:
+
+
+ ● reduce idle time (faculty + students)
+ ● minimize gaps between classes
+ ● improve compactness
+ ● prioritize important sessions (e.g., labs)
+
+
+
+ ✔ Not mandatory, but optimized using scoring
+
+
+ Scoring Function:
+  ● compares multiple timetables
+  ● selects best quality solution
+
+                                       Page 29 of 38
+5. OPTIMIZATION LOGIC
+
+
+ Heuristics used:
+
+
+ ● Most constrained first:
+    → schedule courses with limited options early
+
+
+ ● Least available faculty first:
+    → avoid future conflicts
+
+
+ ● Priority to labs:
+    → require special rooms + longer slots
+
+
+ Benefit:
+   ● reduces backtracking
+   ● improves efficiency
+
+
+
+
+6. CONFLICT DETECTION LOGIC
+
+
+ If timetable is incomplete:
+
+
+ The system detects:
+   ● unscheduled lectures
+   ● faculty overlaps
+   ● room conflicts
+   ● invalid slot usage
+
+
+
+                                    Page 30 of 38
+ Output:
+  → conflict report
+
+
+ Purpose:
+  ● helps admin understand issues
+  ● enables manual fixes
+
+
+
+
+7. OUTPUT GENERATION LOGIC
+
+
+ The system generates:
+
+
+ ● batch-wise timetable
+ ● faculty-wise timetable
+ ● room-wise timetable
+
+
+ Export formats:
+  ● PDF
+  ● CSV
+
+
+ Benefit:
+  ● easy sharing
+  ● printable format
+
+
+
+
+                                    Page 31 of 38
+              IX.        Gantt Chart
+
+
+                                                                                                      Duration
+          Phase                                      Task                              Start Date                     End Date        Status
+                                                                                                       (Days)
+S0 – Initiation & Docs         Group discussion, scope & role assignment           Feb 16, 2026                  3   Feb 19, 2026   Completed
+S0 – Initiation & Docs         Brief description & process model writeup           Feb 18, 2026                  4   Feb 22, 2026   Completed
+S0 – Initiation & Docs         Function Point Analysis                             Feb 22, 2026                  5   Feb 27, 2026   Completed
+S0 – Initiation & Docs         System Requirements Specification (SRS)             Feb 26, 2026                  7   Mar 05, 2026   Completed
+S0 – Initiation & Docs         System design doc, ER diagram & annexures           Mar 02, 2026                  8   Mar 10, 2026   In Progress
+S0 – Initiation & Docs         Sprint planning docs & programs/logic writeup       Mar 08, 2026                  6   Mar 14, 2026   In Progress
+S0 – Initiation & Docs         Risk information sheets & Gantt chart               Mar 12, 2026                  4   Mar 16, 2026   Planned
+S0 – Initiation & Docs         Final review & document submission                  Mar 18, 2026                  2   Mar 20, 2026   Planned
+S0 – Initiation & Docs         ★ Document Submission – Mar 23                      Mar 23, 2026                  0   Mar 23, 2026   Milestone
+Sprint 1 – Input Module        Sprint 1 planning & backlog setup                   Mar 24, 2026                  2   Mar 26, 2026   Planned
+Sprint 1 – Input Module        Project environment setup & repo init               Mar 25, 2026                  3   Mar 28, 2026   Planned
+Sprint 1 – Input Module        Database schema creation & seeding                  Mar 27, 2026                  4   Mar 31, 2026   Planned
+Sprint 1 – Input Module        Build input forms (course, faculty, room, batch)    Mar 29, 2026                  5   Apr 03, 2026   Planned
+Sprint 1 – Input Module        Input validation & constraint rule setup            Apr 02, 2026                  3   Apr 05, 2026   Planned
+Sprint 1 – Input Module        Sprint 1 review & retrospective                     Apr 05, 2026                  2   Apr 07, 2026   Planned
+Sprint 1 – Input Module        ★ Sprint 1 Complete – Apr 4                         Apr 06, 2026                  0   Apr 06, 2026   Milestone
+Sprint 2 – Scheduling
+Engine                         Sprint 2 planning                                       Apr 06, 2026              1   Apr 07, 2026 Planned
+Sprint 2 – Scheduling
+Engine                         Implement CSP variable & domain definition              Apr 07, 2026              4   Apr 11, 2026 Planned
+Sprint 2 – Scheduling
+Engine                         Implement backtracking algorithm                        Apr 10, 2026              6   Apr 16, 2026 Planned
+Sprint 2 – Scheduling
+Engine                         Hard constraint validation logic                        Apr 14, 2026              4   Apr 18, 2026 Planned
+Sprint 2 – Scheduling
+Engine                         Soft constraint optimization (idle gaps etc)            Apr 17, 2026              4   Apr 21, 2026 Planned
+Sprint 2 – Scheduling
+Engine                         Sprint 2 review & retrospective                         Apr 19, 2026              2   Apr 21, 2026 Planned
+Sprint 2 – Scheduling
+Engine                         ★ Sprint 2 Complete – Apr 17                            Apr 20, 2026              0   Apr 20, 2026   Milestone
+Sprint 3 – Output & UI         Sprint 3 planning                                       Apr 20, 2026              1   Apr 21, 2026   Planned
+Sprint 3 – Output & UI         Build batch-wise timetable display                      Apr 21, 2026              4   Apr 25, 2026   Planned
+Sprint 3 – Output & UI         Build faculty-wise & room-wise report views             Apr 23, 2026              4   Apr 27, 2026   Planned
+Sprint 3 – Output & UI         Conflict list display & error handling UI               Apr 25, 2026              3   Apr 28, 2026   Planned
+Sprint 3 – Output & UI         Sprint 3 review & retrospective                         Apr 27, 2026              2   Apr 29, 2026   Planned
+Sprint 3 – Output & UI         ★ Sprint 3 Complete – Apr 25                            Apr 28, 2026              0   Apr 28, 2026   Milestone
+Testing & Submission           System integration testing                              Apr 28, 2026              3   May 01, 2026   Planned
+Testing & Submission           Bug fixes & edge case handling                          Apr 29, 2026              3   May 02, 2026   Planned
+Testing & Submission           Final demo preparation                                  Apr 30, 2026              2   May 02, 2026   Planned
+Testing & Submission           ★ Final Project Submission – Apr 30                     Apr 30, 2026              0   Apr 30, 2026   Milestone
+
+
+
+
+                                                                       Page 32 of 38
+X.     Risk Information Sheets
+
+
+     Risk ID: TTG-RISK-    Date:                                     Impact:
+                                              Probability: 75%
+     01                    23/03/2026                                High
+     Description:
+     The scheduling engine may fail to generate a complete and feasible
+     timetable due to over-constrained input data and conflicting constraints.
+     Since the system uses a Constraint Satisfaction Problem (CSP) with
+     backtracking, it may not find a valid solution in all cases, leading to
+     unresolved conflicts or incomplete schedules.
+
+     Refinement / Context:
+
+     Subcondition 1: Input data may be infeasible (e.g., insufficient rooms,
+     overlapping faculty availability, or excessive course load).
+     Subcondition 2: Hard constraints (faculty, batch, and room non-overlap,
+     lab rules) may conflict with each other, resulting in no valid solution
+     space.
+     Subcondition 3: The CSP-based scheduling algorithm has exponential
+     time complexity, causing performance issues for large datasets.
+     Subcondition 4: Inefficient heuristic selection may increase backtracking
+     depth, leading to longer computation time or failure to converge.
+     Subcondition 5: Inadequate input validation may allow inconsistent or
+     invalid data to reach the scheduling engine, causing failure during
+     timetable generation.
+     Mitigation / Monitoring:
+     1. Implement strong input validation checks before scheduling.
+     2. Use heuristics such as Most Constrained First and lab prioritization to
+     reduce search space.
+     3. Introduce early stopping and partial timetable generation with
+     conflict reporting.
+     4. Monitor execution time and log constraint violations during
+     scheduling.
+     5. Optimize data structures (maps, sets) for efficient constraint checking.
+
+     Management / Contingency Plan / Trigger:
+     1. Allocate buffer time in project schedule for algorithm tuning and
+     optimization.
+     2. Provide fallback: generate partial timetable with conflict report
+     instead of complete failure.
+     3. Allow manual adjustments if automatic scheduling fails.
+
+     Trigger:
+
+     1. Timetable generation exceeds acceptable time limits OR
+     2. System fails to assign all lectures after multiple backtracking attempts
+
+
+                                                   Page 33 of 38
+Current Status:
+Yet to Start
+Originator:                            Assigned To:
+Group C                                Scheduling Engine Developer
+
+
+
+
+Risk ID: TTG-RISK- Date:                                      Impact:
+                                         Probability: 70%
+02                    23/03/2026                              High
+Description:
+The system may experience slow execution or performance degradation
+when generating timetables for large datasets. Since the scheduling
+engine uses a CSP-based backtracking algorithm, the computation time
+may increase significantly with the number of courses, faculty, and
+constraints, leading to delays or system unresponsiveness.
+
+Refinement / Context:
+
+Subcondition 1: Increase in number of courses, batches, and constraints
+expands the search space exponentially.
+Subcondition 2: Inefficient backtracking may explore unnecessary
+combinations, increasing execution time.
+Subcondition 3: Lack of optimized data structures may slow down
+constraint checking operations.
+Subcondition 4: High number of constraint validations may increase
+computational overhead.
+Subcondition 5: Simultaneous user requests or repeated timetable
+generation may overload the system.
+
+Mitigation / Monitoring:
+1. Use efficient heuristics (Most Constrained First, Least Available
+Resource).
+2. Optimize data structures for faster lookup (hash maps, sets).
+3. Implement pruning techniques to eliminate invalid branches early.
+4. Monitor execution time and system performance during scheduling.
+5. Limit repeated unnecessary regeneration requests.
+
+Management / Contingency Plan:
+1. Allocate time for performance optimization and testing.
+2. Introduce timeout mechanism for long-running scheduling processes.
+3. Provide partial timetable output if full generation takes too long.
+
+Trigger:
+
+1. Timetable generation takes longer than acceptable threshold OR
+2. System becomes unresponsive during scheduling execution
+
+                                           Page 34 of 38
+Current Status:
+Yet to Start
+Originator:                               Assigned To:
+Group C                                   Scheduling Engine Developer
+
+
+
+
+Risk ID: TTG-RISK- Date:                                       Impact:
+                                         Probability: 70%
+03                   23/03/2026                                High
+Description:
+Incorrect, incomplete, or inconsistent input data may lead to invalid
+timetable generation, constraint violations, or unreliable outputs. Since
+the system relies heavily on accurate input data (faculty, courses,
+batches, rooms, and time slots), poor data quality can propagate errors
+throughout the system and affect the correctness of the generated
+timetable.
+
+Refinement / Context:
+
+Subcondition 1: Missing or incomplete data (e.g., faculty availability not
+provided, missing room capacity, incomplete course details).
+Subcondition 2: Incorrect data entry (e.g., wrong batch size, invalid time
+slots, incorrect faculty-course mapping).
+Subcondition 3: Inconsistent data relationships (e.g., assigning courses
+to non-existent faculty, batches, or rooms).
+Subcondition 4: Data redundancy or duplication may lead to conflicting
+records in the system.
+Subcondition 5: Frequent updates or modifications in input data may
+create inconsistencies during timetable regeneration.
+
+Mitigation / Monitoring:
+1. Implement strict validation rules (required fields, data types, and
+logical constraints).
+2. Apply cross-validation checks (faculty availability vs assigned slots,
+room capacity vs batch size).
+3. Use controlled UI inputs (dropdowns, predefined selections) to
+minimize manual errors.
+4. Provide real-time validation feedback during data entry.
+5. Maintain logs of input errors and monitor recurring data issues.
+
+
+
+
+                                               Page 35 of 38
+Management / Contingency Plan :
+1. Allocate time for validation module testing and improvement.
+2. Allow users to correct input data and regenerate timetable when
+errors are detected.
+3. Maintain backup of previously validated datasets for recovery if
+needed.
+
+Trigger:
+
+1. Repeated validation failures during data entry OR
+2. Generated timetable contains conflicts due to inconsistent input data
+Current Status:
+Yet to Start
+Originator:                             Assigned To:
+Group C                                 Developer
+
+
+
+
+Risk ID: TTG-RISK-   Date:                                    Impact:
+                                        Probability: 60%
+04                   23/03/2026                               High
+Description:
+A complex or poorly designed user interface may lead to user errors,
+incorrect data entry, and difficulty in understanding generated
+timetables. Since the system involves multiple inputs (faculty, courses,
+batches, rooms, and time slots), a non-intuitive UI can reduce usability
+and affect overall system effectiveness.
+
+
+Refinement / Context:
+
+Subcondition 1: Complex input forms may confuse users while entering
+scheduling data.
+Subcondition 2: Lack of clear instructions or guidance may lead to
+incorrect data entry.
+Subcondition 3: Poor visualization of timetables may make it difficult for
+users to interpret schedules.
+Subcondition 4: Inadequate error messages may prevent users from
+understanding and correcting mistakes.
+Subcondition 5: Inconsistent UI design may reduce user efficiency and
+increase chances of errors.
+
+
+
+
+                                             Page 36 of 38
+Mitigation / Monitoring:
+1. Design a simple and intuitive user interface with clear navigation.
+2. Use structured input forms with labels, tooltips, and guidance.
+3. Provide meaningful and user-friendly error messages.
+4. Implement clear timetable visualization (organized tables, readable
+format).
+5. Conduct usability testing and gather feedback for UI improvements.
+
+Management / Contingency Plan :
+1. Allocate time for UI design improvements and usability testing.
+2. Provide user training or documentation for system usage.
+3. Continuously refine UI based on user feedback.
+
+Trigger:
+
+1. Users frequently make input errors OR
+2. Users report difficulty in understanding or using the system
+Current Status:
+Yet to Start
+Originator:                             Assigned To:
+Group C                                 UI/Frontend Developer
+
+
+
+
+Risk ID: TTG-RISK-   Date:                                    Impact:
+                                        Probability: 60%
+05                   23/03/2026                               High
+Description:
+Integration issues between the frontend (UI) and backend (FastAPI) may
+lead to incorrect data exchange, API failures, or system malfunction.
+Since the system relies on seamless communication between modules,
+any mismatch in data formats, API responses, or request handling can
+disrupt overall functionality.
+
+
+
+
+                                             Page 37 of 38
+Refinement / Context:
+
+Subcondition 1: Mismatch in data formats between frontend and
+backend (e.g., incorrect JSON structure).
+Subcondition 2: API endpoints may not handle requests or responses
+correctly.
+Subcondition 3: Inconsistent data validation between frontend and
+backend may cause errors.
+Subcondition 4: Network or communication failures may interrupt data
+transfer.
+Subcondition 5: Changes in backend logic without updating frontend
+may break integration.
+
+Mitigation / Monitoring:
+1. Define clear API contracts and data formats (JSON schemas).
+2. Perform integration testing between frontend and backend modules.
+3. Use consistent validation rules across both frontend and backend.
+4. Implement proper error handling and response messages in APIs.
+5. Monitor API logs and handle exceptions effectively.
+
+Management / Contingency Plan :
+1. Allocate time for integration testing and debugging.
+2. Maintain version control for APIs to manage changes safely.
+3. Provide fallback error messages and retry mechanisms for failed
+requests.
+
+Trigger:
+
+1. API calls fail or return incorrect responses OR
+2. Data displayed in UI does not match backend data
+Current Status:
+Yet to Start
+Originator:                            Assigned To:
+Group C                                Backend & Frontend Developers
+
+
+
+
+                                            Page 38 of 38
+

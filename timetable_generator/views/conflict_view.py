@@ -18,9 +18,9 @@ from PyQt5.QtWidgets import (
 
 from timetable_generator.components.badge import Badge
 from timetable_generator.components.stat_card import StatCard
+from timetable_generator.controllers.conflict_controller import ConflictController
 from timetable_generator.controllers.export_controller import ExportController
 from timetable_generator.models.conflict import Conflict
-from timetable_generator.utils import mock_data
 
 TITLE_TEXT = "Conflict Report"
 FILTER_OPTIONS = [
@@ -37,7 +37,7 @@ HEADERS = ["#", "Type", "Description", "Severity"]
 class ConflictView(QWidget):
     """Screen for viewing and exporting scheduling conflicts."""
 
-    def __init__(self, export_controller: ExportController) -> None:
+    def __init__(self, conflict_controller: ConflictController, export_controller: ExportController) -> None:
         """Initialize conflict report view.
 
         Args:
@@ -45,8 +45,9 @@ class ConflictView(QWidget):
         """
 
         super().__init__()
+        self._conflict_controller = conflict_controller
         self._export_controller = export_controller
-        self._conflicts: list[Conflict] = mock_data.get_conflicts()
+        self._conflicts: list[Conflict] = []
         self._table = QTableWidget()
         self._filter = QComboBox()
         self._build_ui()
@@ -113,6 +114,7 @@ class ConflictView(QWidget):
         """
 
         try:
+            self._conflicts = self._conflict_controller.get_all()
             rows = self._filtered()
             self._table.setRowCount(0)
             if not rows:

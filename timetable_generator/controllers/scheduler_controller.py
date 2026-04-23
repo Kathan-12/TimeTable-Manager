@@ -6,6 +6,8 @@ from typing import Callable, Dict, List, Tuple
 
 from PyQt5.QtCore import QEventLoop, QTimer
 
+from timetable_generator.controllers.api_client import ApiClient
+
 PROGRESS_STEPS: List[Tuple[int, str]] = [
     (10, "Initializing..."),
     (30, "Applying constraints..."),
@@ -29,6 +31,7 @@ class SchedulerController:
         """
 
         loop = QEventLoop()
+        api = ApiClient()
 
         def emit_step(index: int) -> None:
             if index >= len(PROGRESS_STEPS):
@@ -40,4 +43,9 @@ class SchedulerController:
 
         QTimer.singleShot(50, lambda: emit_step(0))
         loop.exec_()
-        return {"scheduled": 42, "total": 50, "conflicts": 3}
+        result = api.post("/generate-timetable")
+        return {
+            "scheduled": result.get("timetable_count", 0),
+            "total": result.get("timetable_count", 0) + result.get("conflict_count", 0),
+            "conflicts": result.get("conflict_count", 0),
+        }

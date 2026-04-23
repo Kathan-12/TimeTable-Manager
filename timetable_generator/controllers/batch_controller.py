@@ -5,8 +5,8 @@ from __future__ import annotations
 import csv
 from typing import List, Tuple
 
+from timetable_generator.controllers.api_client import ApiClient
 from timetable_generator.models.batch import Batch
-from timetable_generator.utils import mock_data
 
 
 class BatchController:
@@ -15,7 +15,7 @@ class BatchController:
     def __init__(self) -> None:
         """Initialize controller and load mock batch data."""
 
-        self.data: List[Batch] = mock_data.get_batch_list()
+        self._api = ApiClient()
 
     def get_all(self) -> List[Batch]:
         """Fetch all batch records.
@@ -24,7 +24,18 @@ class BatchController:
             List of Batch objects.
         """
 
-        return list(self.data)
+        payload = self._api.get("/batch")
+        items = payload.get("items", [])
+        return [
+            Batch(
+                id=item["id"],
+                name=item.get("name", ""),
+                size=item.get("size", 0),
+                semester=item.get("semester", 1),
+                courses=item.get("courses", []),
+            )
+            for item in items
+        ]
 
     def get_by_id(self, item_id: int) -> Batch | None:
         """Find a batch by identifier.
@@ -36,7 +47,7 @@ class BatchController:
             Matching Batch model or None.
         """
 
-        return next((item for item in self.data if item.id == item_id), None)
+        return next((item for item in self.get_all() if item.id == item_id), None)
 
     def add(self, batch: Batch) -> bool:
         """Add a batch record.
@@ -48,9 +59,13 @@ class BatchController:
             True if inserted; False on duplicate id.
         """
 
-        if self.get_by_id(batch.id) is not None:
-            return False
-        self.data.append(batch)
+        payload = {
+            "name": batch.name,
+            "size": batch.size,
+            "semester": batch.semester,
+            "courses": batch.courses,
+        }
+        self._api.post("/batch", json_body=payload)
         return True
 
     def update(self, item_id: int, batch: Batch) -> bool:
@@ -64,11 +79,14 @@ class BatchController:
             True on success else False.
         """
 
-        for idx, item in enumerate(self.data):
-            if item.id == item_id:
-                self.data[idx] = batch
-                return True
-        return False
+        payload = {
+            "name": batch.name,
+            "size": batch.size,
+            "semester": batch.semester,
+            "courses": batch.courses,
+        }
+        self._api.put(f"/batch/{item_id}", json_body=payload)
+        return True
 
     def delete(self, item_id: int) -> bool:
         """Delete a batch record.
@@ -80,9 +98,8 @@ class BatchController:
             True if deleted else False.
         """
 
-        before = len(self.data)
-        self.data = [item for item in self.data if item.id != item_id]
-        return len(self.data) < before
+        self._api.delete(f"/batch/{item_id}")
+        return True
 
     def import_csv(self, filepath: str) -> Tuple[int, List[str]]:
         """Import batch records from CSV.
@@ -98,23 +115,11 @@ class BatchController:
         errors: List[str] = []
         try:
             with open(filepath, newline="", encoding="utf-8") as handle:
-                reader = csv.DictReader(handle)
-                for row_no, row in enumerate(reader, start=2):
-                    try:
-                        new_id = max((item.id for item in self.data), default=0) + 1
-                        model = Batch(
-                            id=new_id,
-                            name=row.get("name", "").strip(),
-                            size=int(row.get("size", 1)),
-                            semester=int(row.get("semester", 1)),
-                            courses=[],
-                        )
-                        if not model.name:
-                            raise ValueError("Missing required column: name")
-                        self.data.append(model)
-                        success_count += 1
-                    except Exception as exc:
-                        errors.append(f"Row {row_no}: {exc}")
+                files = {"file": (filepath, handle, "text/csv")}
+                data = {"entity": "batch"}
+                result = self._api.post("/import-csv", files=files, data=data)
+                success_count = result.get("inserted", 0)
+                errors = result.get("errors", [])
         except Exception as exc:
             errors.append(str(exc))
         return success_count, errors

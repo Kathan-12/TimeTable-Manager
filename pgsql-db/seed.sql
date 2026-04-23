@@ -1,42 +1,42 @@
 -- =========================
 -- FACULTY
 -- =========================
-INSERT INTO faculty (name) VALUES
-('Dr. Mehta'),
-('Prof. Sharma'),
-('Dr. Patel'),
-('Prof. Iyer'),
-('Dr. Singh');
+INSERT INTO faculty (name, department, email) VALUES
+('Dr. Mehta', 'Computer Science', 'mehta@univ.edu'),
+('Prof. Sharma', 'Computer Science', 'sharma@univ.edu'),
+('Dr. Patel', 'Electronics', 'patel@univ.edu'),
+('Prof. Iyer', 'Physics', 'iyer@univ.edu'),
+('Dr. Singh', 'Mathematics', 'singh@univ.edu');
 
 -- =========================
 -- COURSES
 -- =========================
-INSERT INTO course (name, lectures_per_week, is_lab) VALUES
-('Mathematics', 3, FALSE),
-('Physics', 3, FALSE),
-('Chemistry', 3, FALSE),
-('Data Structures', 4, FALSE),
-('Operating Systems', 4, FALSE),
-('DBMS Lab', 2, TRUE),
-('Physics Lab', 2, TRUE);
+INSERT INTO course (name, code, lectures_per_week, is_lab, duration_hours) VALUES
+('Mathematics', 'MTH101', 3, FALSE, 1.0),
+('Physics', 'PHY101', 3, FALSE, 1.0),
+('Chemistry', 'CHM101', 3, FALSE, 1.0),
+('Data Structures', 'CSE201', 4, FALSE, 1.0),
+('Operating Systems', 'CSE301', 4, FALSE, 1.0),
+('DBMS Lab', 'CSE305L', 2, TRUE, 2.0),
+('Physics Lab', 'PHY101L', 2, TRUE, 2.0);
 
 -- =========================
 -- BATCHES
 -- =========================
-INSERT INTO batch (name, size) VALUES
-('CSE-A', 60),
-('CSE-B', 55),
-('IT-A', 50);
+INSERT INTO batch (name, size, semester) VALUES
+('CSE-A', 60, 3),
+('CSE-B', 55, 3),
+('IT-A', 50, 3);
 
 -- =========================
 -- ROOMS
 -- =========================
-INSERT INTO room (name, capacity, is_lab) VALUES
-('Room-101', 60, FALSE),
-('Room-102', 50, FALSE),
-('Room-103', 70, FALSE),
-('Lab-1', 40, TRUE),
-('Lab-2', 35, TRUE);
+INSERT INTO room (name, room_number, building, capacity, is_lab) VALUES
+('Room-101', 'Room-101', 'Main Block', 60, FALSE),
+('Room-102', 'Room-102', 'Main Block', 50, FALSE),
+('Room-103', 'Room-103', 'Science Block', 70, FALSE),
+('Lab-1', 'Lab-1', 'CS Block', 40, TRUE),
+('Lab-2', 'Lab-2', 'CS Block', 35, TRUE);
 
 -- =========================
 -- TIMESLOTS (Mon-Fri, 5 per day)

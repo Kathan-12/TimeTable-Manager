@@ -16,6 +16,7 @@ from PyQt5.QtWidgets import (
 from timetable_generator.components.sidebar import Sidebar
 from timetable_generator.controllers.availability_controller import AvailabilityController
 from timetable_generator.controllers.batch_controller import BatchController
+from timetable_generator.controllers.conflict_controller import ConflictController
 from timetable_generator.controllers.constraint_controller import ConstraintController
 from timetable_generator.controllers.course_controller import CourseController
 from timetable_generator.controllers.export_controller import ExportController
@@ -23,6 +24,7 @@ from timetable_generator.controllers.faculty_controller import FacultyController
 from timetable_generator.controllers.room_controller import RoomController
 from timetable_generator.controllers.scheduler_controller import SchedulerController
 from timetable_generator.controllers.timeslot_controller import TimeSlotController
+from timetable_generator.controllers.timetable_controller import TimetableController
 from timetable_generator.utils import mock_data
 from timetable_generator.views.availability_view import AvailabilityView
 from timetable_generator.views.batch_view import BatchView
@@ -67,6 +69,8 @@ class MainWindow(QMainWindow):
         self._constraint_controller = ConstraintController()
         self._scheduler_controller = SchedulerController()
         self._export_controller = ExportController()
+        self._timetable_controller = TimetableController()
+        self._conflict_controller = ConflictController()
 
         self._build_ui()
         self._init_views()
@@ -133,9 +137,11 @@ class MainWindow(QMainWindow):
             self._faculty_controller,
             self._room_controller,
             self._course_controller,
+            self._timeslot_controller,
+            self._timetable_controller,
             self._export_controller,
         )
-        conflicts = ConflictView(self._export_controller)
+        conflicts = ConflictView(self._conflict_controller, self._export_controller)
         export = ExportView(self._export_controller)
 
         mapping: Dict[str, QWidget] = {

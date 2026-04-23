@@ -16,7 +16,9 @@ DROP TABLE IF EXISTS timeslot CASCADE;
 -- =========================
 CREATE TABLE faculty (
     id SERIAL PRIMARY KEY,
-    name VARCHAR(100) NOT NULL
+    name VARCHAR(100) NOT NULL,
+    department VARCHAR(100),
+    email VARCHAR(120)
 );
 
 -- =========================
@@ -25,8 +27,10 @@ CREATE TABLE faculty (
 CREATE TABLE course (
     id SERIAL PRIMARY KEY,
     name VARCHAR(100) NOT NULL,
+    code VARCHAR(50),
     lectures_per_week INT NOT NULL CHECK (lectures_per_week > 0),
-    is_lab BOOLEAN DEFAULT FALSE
+    is_lab BOOLEAN DEFAULT FALSE,
+    duration_hours NUMERIC(4,2) DEFAULT 1.0
 );
 
 -- =========================
@@ -35,7 +39,8 @@ CREATE TABLE course (
 CREATE TABLE batch (
     id SERIAL PRIMARY KEY,
     name VARCHAR(50) NOT NULL,
-    size INT NOT NULL CHECK (size > 0)
+    size INT NOT NULL CHECK (size > 0),
+    semester INT DEFAULT 1
 );
 
 -- =========================
@@ -44,6 +49,8 @@ CREATE TABLE batch (
 CREATE TABLE room (
     id SERIAL PRIMARY KEY,
     name VARCHAR(50) NOT NULL,
+    room_number VARCHAR(50),
+    building VARCHAR(100),
     capacity INT NOT NULL CHECK (capacity > 0),
     is_lab BOOLEAN DEFAULT FALSE
 );

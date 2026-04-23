@@ -4,6 +4,7 @@ from __future__ import annotations
 
 from typing import Dict, List, Tuple
 
+from timetable_generator.controllers.api_client import ApiClient
 from timetable_generator.utils import mock_data
 
 HARD_CONSTRAINTS: List[str] = [
@@ -23,6 +24,7 @@ class ConstraintController:
     def __init__(self) -> None:
         """Initialize controller state with default weights."""
 
+        self._api = ApiClient()
         self.data: Dict[str, int] = mock_data.get_soft_constraint_weights()
 
     def get_all(self) -> Dict[str, int]:
@@ -32,6 +34,13 @@ class ConstraintController:
             Dictionary mapping constraint name to weight.
         """
 
+        try:
+            payload = self._api.get("/constraints")
+            rules = payload.get("rules", {})
+            if rules:
+                return {k: int(v) for k, v in rules.items()}
+        except Exception:
+            pass
         return dict(self.data)
 
     def get_by_id(self, key: int) -> Dict[str, int]:
@@ -56,8 +65,7 @@ class ConstraintController:
             Always True for stub behavior.
         """
 
-        self.data.update(constraint)
-        return True
+        return self.update(0, constraint)
 
     def update(self, key: int, constraint: Dict[str, int]) -> bool:
         """Replace soft constraint values.
@@ -72,6 +80,7 @@ class ConstraintController:
 
         if not constraint:
             return False
+        self._api.post("/constraints", json_body={"rules": constraint})
         self.data = dict(constraint)
         return True
 
@@ -86,6 +95,7 @@ class ConstraintController:
         """
 
         self.data = mock_data.get_soft_constraint_weights()
+        self._api.post("/constraints", json_body={"rules": self.data})
         return True
 
     def import_csv(self, filepath: str) -> Tuple[int, List[str]]:
